@@ -5,7 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
@@ -68,6 +68,7 @@ namespace StepDX
         /// Our player sprite
         /// </summary>
         GameSprite player = new GameSprite();
+        Wolverine wolverine;
         /// <summary>
         /// The collision testing subsystem
         /// </summary>
@@ -152,7 +153,31 @@ namespace StepDX
             player.AddTex(new Vector2(0.125f, 0));
             player.AddVertex(new Vector2(0.2f, 0));
             player.AddTex(new Vector2(0.125f, 1));
-            player.Color = Color.Transparent; 
+            player.Color = Color.Transparent;
+
+            /*
+            Texture wolverineTex = TextureLoader.FromFile(device, "../../../textures/wolverine.bmp");
+            wolverine = new Wolverine(2, 2);
+            wolverine.Tex = wolverineTex;
+            */
+            wolverine = new Wolverine(3f, .5f);
+            Texture wolvSprite = TextureLoader.FromFile(device, "../../../textures/wolverine.png");
+            //wolverine.Transparent = true;
+            //wolverine.P = new Vector2(0.5f, 1);
+            wolverine.Tex = wolvSprite;
+
+            /*
+            wolverine.AddVertex(new Vector2(-0.2f, 0));
+            wolverine.AddTex(new Vector2(0, 1));
+            wolverine.AddVertex(new Vector2(-0.2f, 1));
+            wolverine.AddTex(new Vector2(0, 0));
+            wolverine.AddVertex(new Vector2(0.2f, 1));
+            wolverine.AddTex(new Vector2(0.125f, 0));
+            wolverine.AddVertex(new Vector2(0.2f, 0));
+            wolverine.AddTex(new Vector2(0.125f, 1));
+            wolverine.Color = Color.Transparent;
+            */
+             
             // Determine the last time
             stopwatch.Start();
             lastTime = stopwatch.ElapsedMilliseconds;
@@ -248,6 +273,7 @@ namespace StepDX
             // To draw rectangle
             device.DrawPrimitives(PrimitiveType.TriangleFan, 0, 2);*/
             player.Render(device);
+            wolverine.Render(device);
             //End the scene
             device.EndScene();
             device.Present();
@@ -308,7 +334,7 @@ namespace StepDX
                 }
                
                 player.Advance(step);
-               
+                wolverine.Advance(step);
                 
                /* foreach (Polygon p in world)
                 {
