@@ -345,16 +345,13 @@ namespace StepDX
             // device.DrawPrimitives(PrimitiveType.TriangleList, 0, 1);
             // To draw rectangle
             device.DrawPrimitives(PrimitiveType.TriangleFan, 0, 2);*/
-<<<<<<< HEAD
-            player.Render(device);
+           
             foreach (PolygonTextured p in powerup)
             {
                 p.Render(device);
             }
-=======
-            player.Render(device);
             wolverine.Render(device);
->>>>>>> ee02d383f7336c60d2ffb6da0125b58a3a00571d
+            player.Render(device);
             //End the scene
             device.EndScene();
             device.Present();
@@ -415,13 +412,9 @@ namespace StepDX
                     step = (float)Math.Min(step, 0.05 / maxspeed);
                 }
                
-<<<<<<< HEAD
                 player.Advance(step);
                 basketball.Advance(step);
-=======
-                player.Advance(step);
                 wolverine.Advance(step);
->>>>>>> ee02d383f7336c60d2ffb6da0125b58a3a00571d
                 
                /* foreach (Polygon p in world)
                 {
