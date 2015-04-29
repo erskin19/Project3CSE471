@@ -77,6 +77,8 @@ namespace StepDX
                 gs.Write(new CustomVertex.PositionColoredTextured(v.X, v.Y, 0, clr, t.X, t.Y));
             }
 
+            
+
             verticesV.Unlock();
             if (transparent)
             {

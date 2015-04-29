@@ -76,7 +76,7 @@ namespace StepDX
             }
             if (v.X == 0)
             {
-                spriteNum = 5;
+                spriteNum = 4;
                 spriteTime = 0;
             }
             else
@@ -86,30 +86,43 @@ namespace StepDX
             }
             if (v.Y != 0 )
             {
-                spriteNum = 7;
+                spriteNum = 9;
             }
             // Task 3: Correct the behavior on a moving platform
             if(!OnBlock && v.Y <= 0)
             {
-                spriteNum = 5;
+                spriteNum = 4;
             }
             // Create the texture vertices
             textureC.Clear();
             if (v.X >= 0)
             {
+                /*
                 textureC.Add(new Vector2(spriteNum * 0.125f, 1));
                 textureC.Add(new Vector2(spriteNum * 0.125f, 0));
                 textureC.Add(new Vector2((spriteNum + 1) * 0.125f, 0));
                 textureC.Add(new Vector2((spriteNum + 1) * 0.125f, 1));
+                 */
+                
+                textureC.Add(new Vector2((spriteNum + 1) * 0.1f, 1));
+                textureC.Add(new Vector2((spriteNum + 1) * 0.1f, 0));
+                textureC.Add(new Vector2(spriteNum * 0.1f, 0));
+                textureC.Add(new Vector2(spriteNum * 0.1f, 1));
             }
             else
             {
                 // If moving in the negative direction, we draw our sprite 
                 // as a mirror image.
+                /*
                 textureC.Add(new Vector2((spriteNum + 1) * 0.125f, 1));
                 textureC.Add(new Vector2((spriteNum + 1) * 0.125f, 0));
                 textureC.Add(new Vector2(spriteNum * 0.125f, 0));
                 textureC.Add(new Vector2(spriteNum * 0.125f, 1));
+                */
+                textureC.Add(new Vector2(spriteNum * 0.1f, 1));
+                textureC.Add(new Vector2(spriteNum * 0.1f, 0));
+                textureC.Add(new Vector2((spriteNum + 1) * 0.1f, 0));
+                textureC.Add(new Vector2((spriteNum + 1) * 0.1f, 1));
             }
             // Move the vertices
             verticesM.Clear();
