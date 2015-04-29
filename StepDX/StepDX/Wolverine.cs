@@ -27,10 +27,10 @@ namespace StepDX
         protected List<Vector2> textureCHead = new List<Vector2>();
         protected List<Vector2> textureCBody = new List<Vector2>();
 
-        float rotationRate = .1f;
-        double rotationAngle;
-        float rotationTime = 0;
-        bool rotateDirection = true; // "false" simply means spin the other way.
+        public override List<Vector2> Vertices { get { return verticesBody; } }
+
+        float timeElapsed = 0;
+        bool slideDirection = true; // "false" simply means spin the other way.
 
         public Wolverine(float x, float y)
         {
@@ -39,6 +39,9 @@ namespace StepDX
 
             P = new Vector2(x, y);
             
+            //Quick and dirty hack to fix positioning problem
+            y = y + .5f;
+
             //Head
             AddVertexHead(new Vector2(x, y));
             AddVertexHead(new Vector2(x - .0625f, y + .025f));
@@ -78,7 +81,7 @@ namespace StepDX
             AddTexBody(new Vector2(1, 1));
             AddTexBody(new Vector2(1, 0));
 
-            v.X = -.1f;
+            v.X = -.3f;
         }
         public void SaveState()
         {
@@ -134,58 +137,32 @@ namespace StepDX
         public override void Advance(float dt)
         {
 
-            //Rotate Wolverine head
-            if (rotateDirection)
-                rotationAngle += rotationRate * (dt * Math.PI / 3 - Math.PI / 6);     // Between 30 and 60 degrees
-            else
-                rotationAngle -= rotationRate * (dt * Math.PI / 3 - Math.PI / 6);     // Between 30 and 60 degrees
+            // Euler steps
+            p.X += v.X * dt;
+            p.Y += v.Y * dt;
 
+            timeElapsed += dt;
 
-            if (Math.Abs(rotationAngle) > Math.PI / 6)
-            {
-                rotationAngle = Math.PI / 6 * (rotateDirection ? -1 : 1);
-                rotateDirection = !rotateDirection;
+            if(timeElapsed > 1){
+                timeElapsed %= 1;
+                slideDirection = !slideDirection;
             }
 
-            Matrix transform = new Matrix();
-            transform.M11 = (float)Math.Cos(rotationAngle);
-            transform.M21 = -(float)Math.Sin(rotationAngle);
-            transform.M12 = (float)Math.Sin(rotationAngle);
-            transform.M22 = (float)Math.Cos(rotationAngle);
-
-            //float sin = (float)Math.Sin(rotationAngle);
-            //float cos = (float)Math.Cos(rotationAngle);
-
-
-            //Matrix transformbetter = new Matrix();
-            //transform.M11 = (float)(cos + p.X*p.X * (1 - cos));
-            //transform.M21 = (float)( p.X*p.Y *(1-cos));
-            //transform.M31 = (float)(p.Y * sin);
-
-            //transform.M12 = (float)(p.Y * p.X * (1 - cos));
-            //transform.M22 = (float)(cos + p.Y * p.Y * (1 - cos));
-            //transform.M32 = (float)(p.X * sin);
-
-            //transform.M13 = (float)(-p.Y * sin);
-            //transform.M23 = (float)(p.X * sin);
-            //transform.M33 = cos;
-
-
-            //Move Entire wolverine
+            Vector2 headMove;
+            if (slideDirection)
+                headMove = new Vector2(0, .1f * (timeElapsed) - .05f);
+            else
+                headMove = new Vector2(0, -.1f * (timeElapsed) + .05f);
             
-            Vector2 newP = Vector2.Add(p, Vector2.Multiply(v, dt));
 
             // Move the vertices
             verticesMHead.Clear();
             foreach (Vector2 x in verticesHead)
             {
-                x.Subtract(new Vector2(p.X /*+ .125f*/, p.Y));
-                Vector4 vert = Vector2.Transform(x, transform);
-                vert.Add(new Vector4(p.X /*+ .125f*/, p.Y, 0, 0));
-
-                verticesMHead.Add(new Vector2(vert.X + p.X, vert.Y + p.Y));
+                Vector2 loc = Vector2.Add(x, p);
+                verticesMHead.Add(Vector2.Add(loc, headMove));
             }
-            p = newP;
+            
 
             verticesMBody.Clear();
             foreach (Vector2 x in verticesBody)
