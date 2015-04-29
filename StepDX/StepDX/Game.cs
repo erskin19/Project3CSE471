@@ -56,6 +56,8 @@ namespace StepDX
         /// </summary>
         private System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
 
+        private GameSounds sound;
+
         /// <summary>
         /// Polygon floor
         /// </summary>
@@ -73,6 +75,7 @@ namespace StepDX
         /// Our player sprite
         /// </summary>
         GameSprite player = new GameSprite();
+        Wolverine wolverine;
         /// <summary>
         /// The collision testing subsystem
         /// </summary>
@@ -110,6 +113,8 @@ namespace StepDX
                                        Pool.Managed);
 
             background = new Background(device, playingW, playingH);
+
+            sound = new GameSounds(this);
 
             // Add a polygon
             /* floor.AddVertex(new Vector2(0, 1));
@@ -213,7 +218,31 @@ namespace StepDX
             player.AddTex(new Vector2(0.125f, 0));
             player.AddVertex(new Vector2(0.2f, 0));
             player.AddTex(new Vector2(0.125f, 1));
-            player.Color = Color.Transparent; 
+            player.Color = Color.Transparent;
+
+            /*
+            Texture wolverineTex = TextureLoader.FromFile(device, "../../../textures/wolverine.bmp");
+            wolverine = new Wolverine(2, 2);
+            wolverine.Tex = wolverineTex;
+            */
+            wolverine = new Wolverine(3f, .5f);
+            Texture wolvSprite = TextureLoader.FromFile(device, "../../../textures/wolverine.png");
+            //wolverine.Transparent = true;
+            //wolverine.P = new Vector2(0.5f, 1);
+            wolverine.Tex = wolvSprite;
+
+            /*
+            wolverine.AddVertex(new Vector2(-0.2f, 0));
+            wolverine.AddTex(new Vector2(0, 1));
+            wolverine.AddVertex(new Vector2(-0.2f, 1));
+            wolverine.AddTex(new Vector2(0, 0));
+            wolverine.AddVertex(new Vector2(0.2f, 1));
+            wolverine.AddTex(new Vector2(0.125f, 0));
+            wolverine.AddVertex(new Vector2(0.2f, 0));
+            wolverine.AddTex(new Vector2(0.125f, 1));
+            wolverine.Color = Color.Transparent;
+            */
+             
             // Determine the last time
             stopwatch.Start();
             lastTime = stopwatch.ElapsedMilliseconds;
@@ -316,11 +345,16 @@ namespace StepDX
             // device.DrawPrimitives(PrimitiveType.TriangleList, 0, 1);
             // To draw rectangle
             device.DrawPrimitives(PrimitiveType.TriangleFan, 0, 2);*/
+<<<<<<< HEAD
             player.Render(device);
             foreach (PolygonTextured p in powerup)
             {
                 p.Render(device);
             }
+=======
+            player.Render(device);
+            wolverine.Render(device);
+>>>>>>> ee02d383f7336c60d2ffb6da0125b58a3a00571d
             //End the scene
             device.EndScene();
             device.Present();
@@ -381,8 +415,13 @@ namespace StepDX
                     step = (float)Math.Min(step, 0.05 / maxspeed);
                 }
                
+<<<<<<< HEAD
                 player.Advance(step);
                 basketball.Advance(step);
+=======
+                player.Advance(step);
+                wolverine.Advance(step);
+>>>>>>> ee02d383f7336c60d2ffb6da0125b58a3a00571d
                 
                /* foreach (Polygon p in world)
                 {
@@ -504,6 +543,7 @@ namespace StepDX
                         v.Y = 5;
                         player.V = v;
                         player.A = new Vector2(0, -9.8f);
+                        sound.Jump();
                
                  }
             }

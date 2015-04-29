@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 C:\Users\Radha\Documents\Visual Studio 2013\Projects\StepDX\StepDX\bin\Debug\StepDX.exe.config
 C:\Users\Radha\Documents\Visual Studio 2013\Projects\StepDX\StepDX\bin\Debug\StepDX.exe
 C:\Users\Radha\Documents\Visual Studio 2013\Projects\StepDX\StepDX\bin\Debug\StepDX.pdb
@@ -25,3 +26,32 @@ C:\Users\Apoorv\Documents\Visual Studio 2010\Projects\project3\Project3CSE471\St
 C:\Users\Apoorv\Documents\Visual Studio 2010\Projects\project3\Project3CSE471\StepDX\StepDX\obj\Debug\StepDX.csproj.GenerateResource.Cache
 C:\Users\Apoorv\Documents\Visual Studio 2010\Projects\project3\Project3CSE471\StepDX\StepDX\bin\Debug\StepDX.exe
 C:\Users\Apoorv\Documents\Visual Studio 2010\Projects\project3\Project3CSE471\StepDX\StepDX\bin\Debug\StepDX.pdb
+=======
+C:\Users\Radha\Documents\Visual Studio 2013\Projects\StepDX\StepDX\bin\Debug\StepDX.exe.config
+C:\Users\Radha\Documents\Visual Studio 2013\Projects\StepDX\StepDX\bin\Debug\StepDX.exe
+C:\Users\Radha\Documents\Visual Studio 2013\Projects\StepDX\StepDX\bin\Debug\StepDX.pdb
+C:\Users\Radha\Documents\Visual Studio 2013\Projects\StepDX\StepDX\obj\Debug\StepDX.csprojResolveAssemblyReference.cache
+C:\Users\Radha\Documents\Visual Studio 2013\Projects\StepDX\StepDX\obj\Debug\StepDX.Game.resources
+C:\Users\Radha\Documents\Visual Studio 2013\Projects\StepDX\StepDX\obj\Debug\StepDX.Properties.Resources.resources
+C:\Users\Radha\Documents\Visual Studio 2013\Projects\StepDX\StepDX\obj\Debug\StepDX.csproj.GenerateResource.Cache
+C:\Users\Radha\Documents\Visual Studio 2013\Projects\StepDX\StepDX\obj\Debug\StepDX.exe
+C:\Users\Radha\Documents\Visual Studio 2013\Projects\StepDX\StepDX\obj\Debug\StepDX.pdb
+C:\Users\Tyler\CSE471\Project3CSE471\StepDX\StepDX\bin\Debug\StepDX.exe.config
+C:\Users\Tyler\CSE471\Project3CSE471\StepDX\StepDX\obj\Debug\StepDX.exe
+C:\Users\Tyler\CSE471\Project3CSE471\StepDX\StepDX\obj\Debug\StepDX.pdb
+C:\Users\Tyler\CSE471\Project3CSE471\StepDX\StepDX\bin\Debug\StepDX.exe
+C:\Users\Tyler\CSE471\Project3CSE471\StepDX\StepDX\bin\Debug\StepDX.pdb
+C:\Users\Tyler\CSE471\Project3CSE471\StepDX\StepDX\obj\Debug\StepDX.csprojResolveAssemblyReference.cache
+C:\Users\Tyler\CSE471\Project3CSE471\StepDX\StepDX\obj\Debug\StepDX.Game.resources
+C:\Users\Tyler\CSE471\Project3CSE471\StepDX\StepDX\obj\Debug\StepDX.Properties.Resources.resources
+C:\Users\Tyler\CSE471\Project3CSE471\StepDX\StepDX\obj\Debug\StepDX.csproj.GenerateResource.Cache
+C:\Users\steven\Documents\GitHub\Project3CSE471\StepDX\StepDX\bin\Debug\StepDX.exe.config
+C:\Users\steven\Documents\GitHub\Project3CSE471\StepDX\StepDX\obj\Debug\StepDX.exe
+C:\Users\steven\Documents\GitHub\Project3CSE471\StepDX\StepDX\obj\Debug\StepDX.pdb
+C:\Users\steven\Documents\GitHub\Project3CSE471\StepDX\StepDX\obj\Debug\StepDX.csprojResolveAssemblyReference.cache
+C:\Users\steven\Documents\GitHub\Project3CSE471\StepDX\StepDX\obj\Debug\StepDX.Game.resources
+C:\Users\steven\Documents\GitHub\Project3CSE471\StepDX\StepDX\obj\Debug\StepDX.Properties.Resources.resources
+C:\Users\steven\Documents\GitHub\Project3CSE471\StepDX\StepDX\obj\Debug\StepDX.csproj.GenerateResource.Cache
+C:\Users\steven\Documents\GitHub\Project3CSE471\StepDX\StepDX\bin\Debug\StepDX.exe
+C:\Users\steven\Documents\GitHub\Project3CSE471\StepDX\StepDX\bin\Debug\StepDX.pdb
+>>>>>>> ee02d383f7336c60d2ffb6da0125b58a3a00571d
