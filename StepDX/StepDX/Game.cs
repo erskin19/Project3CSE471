@@ -56,6 +56,8 @@ namespace StepDX
         /// </summary>
         private System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
 
+        private GameSounds sound;
+
         /// <summary>
         /// Polygon floor
         /// </summary>
@@ -93,6 +95,8 @@ namespace StepDX
                                        CustomVertex.PositionColored.Format,
                                        Pool.Managed);
             background = new Background(device, playingW, playingH);
+
+            sound = new GameSounds(this);
 
             // Add a polygon
             /* floor.AddVertex(new Vector2(0, 1));
@@ -372,6 +376,7 @@ namespace StepDX
                         v.Y = 7;
                         player.V = v;
                         player.A = new Vector2(0, -9.8f);
+                        sound.Jump();
                
                  }
             }
