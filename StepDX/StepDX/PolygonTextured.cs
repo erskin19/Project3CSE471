@@ -14,7 +14,7 @@ namespace StepDX
         /// <summary>
         /// The texture map we use for this polygon
         /// </summary>
-        private Texture texture = null;
+        protected Texture texture = null;
 
         /// <summary>
         /// The texture map we use for this polygon
@@ -27,7 +27,7 @@ namespace StepDX
         // <summary>
         /// Indicates if the texture is transparent
         /// </summary>
-        private bool transparent = false;
+        protected bool transparent = false;
 
         /// <summary>
         /// Indicates if the texture is transparent
@@ -76,6 +76,8 @@ namespace StepDX
                 Vector2 t = textureC[i];
                 gs.Write(new CustomVertex.PositionColoredTextured(v.X, v.Y, 0, clr, t.X, t.Y));
             }
+
+            
 
             verticesV.Unlock();
             if (transparent)

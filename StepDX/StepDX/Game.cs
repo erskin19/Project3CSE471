@@ -5,7 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
@@ -26,12 +26,12 @@ namespace StepDX
         /// <summary>
         /// Width of our playing area (meters)
         /// </summary>
-        private float playingW = 32;
+        private float playingW = 11;
         /// <summary>
         /// Vertex buffer for our drawing
         /// </summary>
         private VertexBuffer vertices = null;
-
+        private VertexBuffer verticeshex = null;
         /// <summary>
         /// The background image class
         /// </summary>
@@ -66,14 +66,25 @@ namespace StepDX
         /// All of the polygons that make up our world
         /// </summary>
         List<Polygon> world = new List<Polygon>();
+        List<Polygon> powerup = new List<Polygon>();
+        Polygon powerup_to_remove = new Polygon();
+        List<Polygon> coins = new List<Polygon>();
+        Polygon coin_to_remove = new Polygon();
+        PowerUp basketball = new PowerUp();
         /// <summary>
         /// Our player sprite
         /// </summary>
         GameSprite player = new GameSprite();
+        Wolverine wolverine;
         /// <summary>
         /// The collision testing subsystem
         /// </summary>
         Collision collision = new Collision();
+
+        Texture spritetexture;
+        Texture spritepowertexture;
+        PolygonTextured pt = new PolygonTextured();
+
         public Game()
         {
             InitializeComponent();
@@ -94,6 +105,13 @@ namespace StepDX
                                        0,      // No special usage
                                        CustomVertex.PositionColored.Format,
                                        Pool.Managed);
+            verticeshex = new VertexBuffer(typeof(CustomVertex.PositionColored), // Type of vertex
+                                       6,      // How many
+                                       device, // What device
+                                       0,      // No special usage
+                                       CustomVertex.PositionColored.Format,
+                                       Pool.Managed);
+
             background = new Background(device, playingW, playingH);
 
             sound = new GameSounds(this);
@@ -114,6 +132,48 @@ namespace StepDX
             floor.Color = Color.CornflowerBlue;
             world.Add(floor);
 
+            Texture coin_texture = TextureLoader.FromFile(device, "../../coin.png");
+            PolygonTextured hexagon = new PolygonTextured();
+            hexagon.Transparent = true;
+            hexagon.Tex = coin_texture;
+            float x = 3f;
+            float y = 3f;
+            hexagon.AddVertex(new Vector2(x + 0.5f/6, y));
+            hexagon.AddTex(new Vector2(0.75f, 1f));
+            hexagon.AddVertex(new Vector2(x, y + 1.732f / 12));
+            hexagon.AddTex(new Vector2(1f, 0.5f));
+            hexagon.AddVertex(new Vector2(x + 0.5f / 6, y + 1.732f / 6));
+            hexagon.AddTex(new Vector2(0.75f, 0f));
+            hexagon.AddVertex(new Vector2(x + 1.5f / 6, y + 1.732f / 6));
+            hexagon.AddTex(new Vector2(0.25f, 0f));
+            hexagon.AddVertex(new Vector2(x + 2f / 6, y+1.732f/12));
+            hexagon.AddTex(new Vector2(0f, 0.5f));
+            hexagon.AddVertex(new Vector2(x + 1.5f / 6, y));
+            hexagon.AddTex(new Vector2(0.25f, 1f));
+            hexagon.Color = Color.Transparent;
+            coins.Add(hexagon);
+
+            //basketball
+            Texture basketballtexture = TextureLoader.FromFile(device, "../../basketball.png");
+            basketball.Transparent = true;
+            basketball.P = new Vector2(2, 2);
+            //basketball.V = new Vector2(0.1f,-0.1f);
+            basketball.Tex = basketballtexture;
+
+            basketball.AddVertex(new Vector2(-0.5f/3, 1.732f/6));
+            basketball.AddTex(new Vector2(0, 1));
+            basketball.AddVertex(new Vector2(0.5f/3, 1.732f/6));
+            basketball.AddTex(new Vector2(0, 0));
+            basketball.AddVertex(new Vector2(0.5f/3, 0));
+            basketball.AddTex(new Vector2(1, 0));
+            basketball.AddVertex(new Vector2(-0.5f/3, 0));
+            basketball.AddTex(new Vector2(1, 1));
+            basketball.Color = Color.Transparent;
+            //powerup.Add(basketball);
+            //Vector2 v_b = basketball.V;
+            //v_b.Y = -0.5f;
+            //basketball.V = v_b;
+
             AddObstacle(2, 3, 1.7f, 1.9f, Color.Crimson);
             AddObstacle(4, 4.2f, 1, 2.1f, Color.Coral);
             AddObstacle(5, 6, 2.2f, 2.4f, Color.BurlyWood);
@@ -130,7 +190,7 @@ namespace StepDX
             world.Add(platform);
 
             Texture texture = TextureLoader.FromFile(device, "../../stone08.bmp");
-            PolygonTextured pt = new PolygonTextured();
+            //PolygonTextured pt = new PolygonTextured();
             pt.Tex = texture;
             pt.AddVertex(new Vector2(1.2f, 3.5f));
             pt.AddTex(new Vector2(0, 1));
@@ -143,7 +203,9 @@ namespace StepDX
             pt.Color = Color.Transparent;
             world.Add(pt);
 
-            Texture spritetexture = TextureLoader.FromFile(device, "../../guy8.bmp");
+            //Texture spritetexture = TextureLoader.FromFile(device, "../../guy8.bmp");
+            spritetexture = TextureLoader.FromFile(device, "../../smb_mario_sheet5.png");
+            spritepowertexture = TextureLoader.FromFile(device, "../../smb_mario_sheet_power.png");
             player.Transparent = true;
             player.P = new Vector2(0.5f, 1);
             player.Tex = spritetexture;
@@ -156,7 +218,31 @@ namespace StepDX
             player.AddTex(new Vector2(0.125f, 0));
             player.AddVertex(new Vector2(0.2f, 0));
             player.AddTex(new Vector2(0.125f, 1));
-            player.Color = Color.Transparent; 
+            player.Color = Color.Transparent;
+
+            /*
+            Texture wolverineTex = TextureLoader.FromFile(device, "../../../textures/wolverine.bmp");
+            wolverine = new Wolverine(2, 2);
+            wolverine.Tex = wolverineTex;
+            */
+            wolverine = new Wolverine(3f, .5f);
+            Texture wolvSprite = TextureLoader.FromFile(device, "../../../textures/wolverine.png");
+            //wolverine.Transparent = true;
+            //wolverine.P = new Vector2(0.5f, 1);
+            wolverine.Tex = wolvSprite;
+
+            /*
+            wolverine.AddVertex(new Vector2(-0.2f, 0));
+            wolverine.AddTex(new Vector2(0, 1));
+            wolverine.AddVertex(new Vector2(-0.2f, 1));
+            wolverine.AddTex(new Vector2(0, 0));
+            wolverine.AddVertex(new Vector2(0.2f, 1));
+            wolverine.AddTex(new Vector2(0.125f, 0));
+            wolverine.AddVertex(new Vector2(0.2f, 0));
+            wolverine.AddTex(new Vector2(0.125f, 1));
+            wolverine.Color = Color.Transparent;
+            */
+             
             // Determine the last time
             stopwatch.Start();
             lastTime = stopwatch.ElapsedMilliseconds;
@@ -225,6 +311,14 @@ namespace StepDX
                 p.Render(device);
             }
 
+
+            if(coins.Count >= 1){
+            foreach (Polygon p in coins)
+            {
+                p.Render(device);
+            }
+            }
+
             /*// Render the triangle (later a rectangle)
             GraphicsStream gs = vertices.Lock(0, 0, 0);     // Lock the vertex list
             int clr = Color.FromArgb(255, 0, 0).ToArgb();
@@ -251,7 +345,16 @@ namespace StepDX
             // device.DrawPrimitives(PrimitiveType.TriangleList, 0, 1);
             // To draw rectangle
             device.DrawPrimitives(PrimitiveType.TriangleFan, 0, 2);*/
+<<<<<<< HEAD
             player.Render(device);
+            foreach (PolygonTextured p in powerup)
+            {
+                p.Render(device);
+            }
+=======
+            player.Render(device);
+            wolverine.Render(device);
+>>>>>>> ee02d383f7336c60d2ffb6da0125b58a3a00571d
             //End the scene
             device.EndScene();
             device.Present();
@@ -295,6 +398,7 @@ namespace StepDX
 
             // How much time change has there been?
             long time = stopwatch.ElapsedMilliseconds;
+            long power_start_time = 0;
             float delta = (time - lastTime) * 0.001f;       // Delta time in milliseconds
             lastTime = time;
             
@@ -311,8 +415,13 @@ namespace StepDX
                     step = (float)Math.Min(step, 0.05 / maxspeed);
                 }
                
+<<<<<<< HEAD
                 player.Advance(step);
-               
+                basketball.Advance(step);
+=======
+                player.Advance(step);
+                wolverine.Advance(step);
+>>>>>>> ee02d383f7336c60d2ffb6da0125b58a3a00571d
                 
                /* foreach (Polygon p in world)
                 {
@@ -323,6 +432,7 @@ namespace StepDX
                     p.Advance(step);
                     if (collision.Test(player, p))
                     {
+                        //powerup.Add(basketball);
                         float depth = collision.P1inP2 ?
                                   collision.Depth : -collision.Depth;
                         player.P = player.P + collision.N * depth;
@@ -336,7 +446,64 @@ namespace StepDX
                         player.Advance(0);
                 
                     }
+                    else if (player.P.X > 10)
+                    {
+                        Restart();
+                    }
+                    if (collision.Test(basketball, p))
+                    {
+                        //powerup.Add(basketball);
+                        float depth = collision.P1inP2 ?
+                                  collision.Depth : -collision.Depth;
+                        basketball.P = basketball.P + collision.N * depth;
+                        Vector2 v2 = basketball.V;
+                        if (collision.N.X != 0)
+                            v2.X = -v2.X;
+                        if (collision.N.Y != 0)
+                            v2.Y = -0.5f;
+
+                        basketball.V = v2;
+                        basketball.Advance(0);
+
+                    }
                 }
+
+                if (collision.Test(pt, player))
+                {
+                    powerup.Add(basketball);
+                }
+
+                foreach (Polygon p in powerup)
+                {
+                    if (collision.Test(p, player))
+                    {
+                        //powerup.Remove(basketball);
+                        powerup_to_remove = p;
+                        player.Tex = spritepowertexture;
+                        power_start_time = time;
+                    }
+                }
+                powerup.Remove(powerup_to_remove);
+
+                if (power_start_time != 0)
+                {
+                    if ((time - power_start_time) > 5)
+                    {
+                        player.Tex = spritetexture;
+                    }
+                }
+
+                foreach (Polygon p in coins)
+                {
+                    //p.Advance(step);
+                    if (collision.Test(player, p))
+                    {
+                        coin_to_remove = p;
+                        //coins.Remove(p);
+                    }
+                }
+
+                coins.Remove(coin_to_remove);
 
                 delta -= step;
             }
@@ -367,18 +534,29 @@ namespace StepDX
                 v.X = -1.5f;
                 player.V = v;
             }
-            else if (e.KeyCode == Keys.Space)
+            else if (e.KeyCode == Keys.Up)
             {
                 // Task 2: Allow jumping only if player is standing on something
                 if (player.OnBlock)
                 {
                         Vector2 v = player.V;
-                        v.Y = 7;
+                        v.Y = 5;
                         player.V = v;
                         player.A = new Vector2(0, -9.8f);
                         sound.Jump();
                
                  }
+            }
+            else if (e.KeyCode == Keys.Q)
+            {
+                Vector2 v = basketball.V;
+                v.X = 1.5f;
+                v.Y = -0.5f; 
+                basketball.V = v;
+            }
+            else if (e.KeyCode == Keys.R)
+            {
+                Restart();
             }
         }
 
@@ -393,6 +571,11 @@ namespace StepDX
                 v.X = 0;
                 player.V = v;
             }
+        }
+
+        public void Restart()
+        {
+            player.P = new Vector2(0.5f, 1);
         }
     }
 }
