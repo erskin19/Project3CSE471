@@ -69,10 +69,13 @@ namespace StepDX
         List<Polygon> powerup = new List<Polygon>();
         Polygon powerup_to_remove = new Polygon();
         List<Polygon> coins = new List<Polygon>();
-        List<Polygon> swords = new List<Polygon>();
-        Polygon sword_to_remove = new Polygon();
+        List<Sword> swords = new List<Sword>();
+        Sword sword_to_remove = new Sword();
         Polygon coin_to_remove = new Polygon();
         PowerUp basketball = new PowerUp();
+
+        List<Wolverine> wolverines = new List<Wolverine>();
+        Wolverine wolverine_to_remove;
         /// <summary>
         /// Our player sprite
         /// </summary>
@@ -232,7 +235,7 @@ namespace StepDX
             //wolverine.Transparent = true;
             //wolverine.P = new Vector2(0.5f, 1);
             wolverine.Tex = wolvSprite;
-
+            wolverines.Add(wolverine);
             /*
             wolverine.AddVertex(new Vector2(-0.2f, 0));
             wolverine.AddTex(new Vector2(0, 1));
@@ -245,6 +248,7 @@ namespace StepDX
             wolverine.Color = Color.Transparent;
             */
 
+            /*
             Texture swordtexture = TextureLoader.FromFile(device, "../../sword_alpha.png");
             sword_sprite.Transparent = true;
             //sword_sprite.P = new Vector2(2,2);
@@ -256,6 +260,7 @@ namespace StepDX
             sword_sprite.AddVertex(new Vector2(1, 1));
             sword_sprite.AddTex(new Vector2(0,0));
             sword_sprite.Color = Color.Transparent;
+            */
             // Determine the last time
             stopwatch.Start();
             lastTime = stopwatch.ElapsedMilliseconds;
@@ -368,9 +373,18 @@ namespace StepDX
                 p.Render(device);
             }
             //sword_sprite.Render(device);
-            wolverine.Render(device);
+            foreach (Wolverine w in wolverines)
+            {
+                w.Render(device);
+            }
             player.Render(device);
             //End the scene
+            using (System.Drawing.Font font1 = new System.Drawing.Font("Times New Roman", 24, FontStyle.Bold, GraphicsUnit.Pixel))
+            {
+                PointF pointF1 = new PointF(30, 10);
+                //e.Graphics.DrawString("Hello", font1, Brushes.Blue, pointF1);
+            }
+            
             device.EndScene();
             device.Present();
         }
@@ -481,10 +495,34 @@ namespace StepDX
                         basketball.Advance(0);
 
                     }
+                    if (collision.Test(wolverine, p))
+                    {
+                        //powerup.Add(basketball);
+                        float depth = collision.P1inP2 ?
+                                  collision.Depth : -collision.Depth;
+                        wolverine.P = wolverine.P + collision.N * depth;
+                        Vector2 v3 = wolverine.V;
+                        Vector2 v4 = wolverine.P;
+                        if (collision.N.X != 0)
+                            v4.X = v4.X + 1;
+                            v3.X = -v3.X;
+                        if (collision.N.Y != 0)
+                            v3.Y = 0;
+
+                        wolverine.P = v4;
+                        wolverine.V = v3;
+                        wolverine.Advance(0);
+
+                    }
                 }
 
                 if (collision.Test(pt, player))
                 {
+                    Vector2 v = basketball.V;
+                    v.X = 1.5f;
+                    //v.Y = -0.5f;
+                    basketball.P = new Vector2(1.5f, 3.7f);
+                    basketball.V = v;
                     powerup.Add(basketball);
                 }
 
@@ -514,11 +552,37 @@ namespace StepDX
                     if (collision.Test(player, p))
                     {
                         coin_to_remove = p;
+                        sound.Coin();
                         //coins.Remove(p);
                     }
                 }
 
                 coins.Remove(coin_to_remove);
+
+                foreach(Sword s in swords)
+                {
+                    foreach(Wolverine p in wolverines)
+                    {
+                        
+                        /*if (collision.Test(s, p))
+                        {
+                            wolverine_to_remove = p;
+                            sword_to_remove = s;
+                            sound.Death();
+                        }*/
+
+
+                        if (Math.Abs(s.P.X - .7f - p.P.X) < .01 && Math.Abs(s.P.Y - p.P.Y) < 1)
+                        {
+                            sword_to_remove = s;
+                            wolverine_to_remove = p;
+                            sound.Death();
+                        }
+                    }
+                }
+
+                wolverines.Remove(wolverine_to_remove);
+                swords.Remove(sword_to_remove);
 
                 delta -= step;
             }
@@ -575,12 +639,12 @@ namespace StepDX
             }
             else if(e.KeyCode == Keys.Space)
             {
-                Vector2 vs = new Vector2();
-                vs.X = player.P.X - 1;
-                vs.Y = player.P.Y;
-                sword_sprite.P = vs;
+                //Vector2 vs = new Vector2();
+                //vs.X = player.P.X - 1;
+                //vs.Y = player.P.Y;
+                //sword_sprite.P = vs;
 
-                swords.Add(sword_sprite);
+                swords.Add(MakeSword());
             }
         }
 
@@ -605,7 +669,25 @@ namespace StepDX
         Sword MakeSword()
         {
             Sword s = new Sword();
-
+            Texture swordtexture = TextureLoader.FromFile(device, "../../sword_alpha.png");
+            s.Transparent = true;
+            //sword_sprite.P = new Vector2(2,2);
+            s.Tex = swordtexture;
+            s.AddVertex(new Vector2(1, 0));
+            s.AddTex(new Vector2(0, 1));
+            s.AddVertex(new Vector2(2, 0.5f));
+            s.AddTex(new Vector2(1, 0.5f));
+            s.AddVertex(new Vector2(1, 1));
+            s.AddTex(new Vector2(0, 0));
+            s.Color = Color.Transparent;
+            Vector2 vs = new Vector2();
+            vs.X = player.P.X - 1;
+            vs.Y = player.P.Y;
+            Vector2 vvs = new Vector2();
+            vvs.X = 1.5f;
+            vvs.Y = 0;
+            s.V = vvs;
+            s.P = vs;
             return s;
         }
     }

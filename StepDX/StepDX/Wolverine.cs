@@ -12,7 +12,7 @@ namespace StepDX
     {
         // Task 1: Limit the movement of the player with left and right bounds
         private float playerMinX = 0.4f;                    // Minimum x allowed
-        private float playerMaxX = 31.6f;                   // Maximum x allowed
+        private float playerMaxX = 6.6f;                   // Maximum x allowed
 
         private Vector2 p = new Vector2(0, 0);  // Position
         private Vector2 v = new Vector2(0, 0);  // Velocity
@@ -27,7 +27,10 @@ namespace StepDX
         protected List<Vector2> textureCHead = new List<Vector2>();
         protected List<Vector2> textureCBody = new List<Vector2>();
 
-        public override List<Vector2> Vertices { get { return verticesBody; } }
+        public override List<Vector2> Vertices { get { return verticesMHead; } }
+
+        public List<Vector2> VerticesHead { get { return verticesMHead; } }
+        public List<Vector2> VerticesBody { get { return verticesMBody; } }
 
         float timeElapsed = 0;
         bool slideDirection = true; // "false" simply means spin the other way.
@@ -82,6 +85,7 @@ namespace StepDX
             AddTexBody(new Vector2(1, 0));
 
             v.X = -.3f;
+            
         }
         public void SaveState()
         {
@@ -140,6 +144,11 @@ namespace StepDX
             // Euler steps
             p.X += v.X * dt;
             p.Y += v.Y * dt;
+
+            if(p.X > playerMaxX)
+            {
+                v.X = -v.X;
+            }
 
             timeElapsed += dt;
 
