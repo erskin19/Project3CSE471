@@ -6,3 +6,4 @@ C:\Users\Tyler\CSE471\Project3CSE471\StepDX\StepDX\bin\Debug\StepDX.exe
 C:\Users\Tyler\CSE471\Project3CSE471\StepDX\StepDX\bin\Debug\StepDX.pdb
 C:\Users\Tyler\CSE471\Project3CSE471\StepDX\StepDX\obj\Debug\StepDX.exe
 C:\Users\Tyler\CSE471\Project3CSE471\StepDX\StepDX\obj\Debug\StepDX.pdb
+C:\Users\Tyler\CSE471\Project3CSE471\StepDX\StepDX\obj\Debug\StepDX.csprojResolveAssemblyReference.cache

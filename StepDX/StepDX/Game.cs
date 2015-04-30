@@ -69,6 +69,8 @@ namespace StepDX
         List<Polygon> powerup = new List<Polygon>();
         Polygon powerup_to_remove = new Polygon();
         List<Polygon> coins = new List<Polygon>();
+        List<Polygon> swords = new List<Polygon>();
+        Polygon sword_to_remove = new Polygon();
         Polygon coin_to_remove = new Polygon();
         PowerUp basketball = new PowerUp();
         /// <summary>
@@ -84,7 +86,7 @@ namespace StepDX
         Texture spritetexture;
         Texture spritepowertexture;
         PolygonTextured pt = new PolygonTextured();
-
+        Sword sword_sprite = new Sword();
         public Game()
         {
             InitializeComponent();
@@ -242,7 +244,18 @@ namespace StepDX
             wolverine.AddTex(new Vector2(0.125f, 1));
             wolverine.Color = Color.Transparent;
             */
-             
+
+            Texture swordtexture = TextureLoader.FromFile(device, "../../sword_alpha.png");
+            sword_sprite.Transparent = true;
+            //sword_sprite.P = new Vector2(2,2);
+            sword_sprite.Tex = swordtexture;
+            sword_sprite.AddVertex(new Vector2(1, 0));
+            sword_sprite.AddTex(new Vector2(0,1));
+            sword_sprite.AddVertex(new Vector2(2, 0.5f));
+            sword_sprite.AddTex(new Vector2(1,0.5f));
+            sword_sprite.AddVertex(new Vector2(1, 1));
+            sword_sprite.AddTex(new Vector2(0,0));
+            sword_sprite.Color = Color.Transparent;
             // Determine the last time
             stopwatch.Start();
             lastTime = stopwatch.ElapsedMilliseconds;
@@ -350,6 +363,11 @@ namespace StepDX
             {
                 p.Render(device);
             }
+            foreach(PolygonTextured p in swords)
+            {
+                p.Render(device);
+            }
+            //sword_sprite.Render(device);
             wolverine.Render(device);
             player.Render(device);
             //End the scene
@@ -415,7 +433,11 @@ namespace StepDX
                 player.Advance(step);
                 basketball.Advance(step);
                 wolverine.Advance(step);
-                
+                foreach(Polygon p in swords)
+                {
+                    p.Advance(step);
+                }
+                //sword_sprite.Advance(step);
                /* foreach (Polygon p in world)
                 {
                     p.Advance(step);     
@@ -551,6 +573,15 @@ namespace StepDX
             {
                 Restart();
             }
+            else if(e.KeyCode == Keys.Space)
+            {
+                Vector2 vs = new Vector2();
+                vs.X = player.P.X - 1;
+                vs.Y = player.P.Y;
+                sword_sprite.P = vs;
+
+                swords.Add(sword_sprite);
+            }
         }
 
         protected override void OnKeyUp(System.Windows.Forms.KeyEventArgs e)
@@ -569,6 +600,13 @@ namespace StepDX
         public void Restart()
         {
             player.P = new Vector2(0.5f, 1);
+        }
+
+        Sword MakeSword()
+        {
+            Sword s = new Sword();
+
+            return s;
         }
     }
 }
