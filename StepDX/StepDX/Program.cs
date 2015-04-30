@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 //using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -21,10 +22,20 @@ namespace StepDX
             game.Show();
             do
             {
-                game.Advance();
+                //game.Advance();
+                
+                if(game.game_over != true)
+                {
+
+                    game.Advance();
+                 //   break;
+                }
                 game.Render();
                 Application.DoEvents();
             } while (game.Created);
+            //System.Threading.Thread.Sleep(2000);
+            game.Dispose();
+
         }
     }
 }

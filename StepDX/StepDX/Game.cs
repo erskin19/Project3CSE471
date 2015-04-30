@@ -46,6 +46,8 @@ namespace StepDX
         float playerMaxX = 31.6f;                   // Maximum x allowed
        */
 
+        private Random random = new Random();
+
         /// <summary>
         /// What the last time reading was
         /// </summary>
@@ -85,11 +87,19 @@ namespace StepDX
         /// The collision testing subsystem
         /// </summary>
         Collision collision = new Collision();
+        //Microsoft.DirectX.Direct3D.Font font;
+
+        public bool game_over = false;
 
         Texture spritetexture;
         Texture spritepowertexture;
         PolygonTextured pt = new PolygonTextured();
         Sword sword_sprite = new Sword();
+        PolygonTextured flag = new PolygonTextured();
+
+        private int score = 0;
+        
+
         public Game()
         {
             InitializeComponent();
@@ -119,6 +129,8 @@ namespace StepDX
 
             background = new Background(device, playingW, playingH);
 
+            //font = new Microsoft.DirectX.Direct3D.Font(device, new System.Drawing.Font(System.Drawing.FontFamily.GenericSansSerif, 20f));
+
             sound = new GameSounds(this);
 
             // Add a polygon
@@ -136,28 +148,41 @@ namespace StepDX
             floor.AddVertex(new Vector2(0, 0.9f));
             floor.Color = Color.CornflowerBlue;
             world.Add(floor);
+            for (int i = 0; i < 10; i++)
+            {
+                Texture coin_texture = TextureLoader.FromFile(device, "../../coin.png");
+                PolygonTextured hexagon = new PolygonTextured();
+                hexagon.Transparent = true;
+                hexagon.Tex = coin_texture;
+                
+                float x = (float)random.Next(2,10) ;
+                float y = (float)random.Next(1,6);
+                
+                hexagon.AddVertex(new Vector2(x + 0.5f / 6, y));
+                hexagon.AddTex(new Vector2(0.75f, 1f));
+                hexagon.AddVertex(new Vector2(x, y + 1.732f / 12));
+                hexagon.AddTex(new Vector2(1f, 0.5f));
+                hexagon.AddVertex(new Vector2(x + 0.5f / 6, y + 1.732f / 6));
+                hexagon.AddTex(new Vector2(0.75f, 0f));
+                hexagon.AddVertex(new Vector2(x + 1.5f / 6, y + 1.732f / 6));
+                hexagon.AddTex(new Vector2(0.25f, 0f));
+                hexagon.AddVertex(new Vector2(x + 2f / 6, y + 1.732f / 12));
+                hexagon.AddTex(new Vector2(0f, 0.5f));
+                hexagon.AddVertex(new Vector2(x + 1.5f / 6, y));
+                hexagon.AddTex(new Vector2(0.25f, 1f));
+                hexagon.Color = Color.Transparent;
+                coins.Add(hexagon);
+            }
 
-            Texture coin_texture = TextureLoader.FromFile(device, "../../coin.png");
-            PolygonTextured hexagon = new PolygonTextured();
-            hexagon.Transparent = true;
-            hexagon.Tex = coin_texture;
-            float x = 3f;
-            float y = 3f;
-            hexagon.AddVertex(new Vector2(x + 0.5f/6, y));
-            hexagon.AddTex(new Vector2(0.75f, 1f));
-            hexagon.AddVertex(new Vector2(x, y + 1.732f / 12));
-            hexagon.AddTex(new Vector2(1f, 0.5f));
-            hexagon.AddVertex(new Vector2(x + 0.5f / 6, y + 1.732f / 6));
-            hexagon.AddTex(new Vector2(0.75f, 0f));
-            hexagon.AddVertex(new Vector2(x + 1.5f / 6, y + 1.732f / 6));
-            hexagon.AddTex(new Vector2(0.25f, 0f));
-            hexagon.AddVertex(new Vector2(x + 2f / 6, y+1.732f/12));
-            hexagon.AddTex(new Vector2(0f, 0.5f));
-            hexagon.AddVertex(new Vector2(x + 1.5f / 6, y));
-            hexagon.AddTex(new Vector2(0.25f, 1f));
-            hexagon.Color = Color.Transparent;
-            coins.Add(hexagon);
-
+            Texture flag_texture = TextureLoader.FromFile(device, "../../../textures/flag.png");
+            flag.AddVertex(new Vector2(9.7f, 2));
+            flag.AddVertex(new Vector2(10.7f, 2));
+            flag.AddVertex(new Vector2(10.7f, 1));
+            flag.Tex = flag_texture;
+            flag.AddTex(new Vector2(0, 0));
+            flag.AddTex(new Vector2(1, 0));
+            flag.AddTex(new Vector2(1, 1));
+            //world.Add(flag);
             //basketball
             Texture basketballtexture = TextureLoader.FromFile(device, "../../basketball.png");
             basketball.Transparent = true;
@@ -230,12 +255,19 @@ namespace StepDX
             wolverine = new Wolverine(2, 2);
             wolverine.Tex = wolverineTex;
             */
-            wolverine = new Wolverine(3f, .5f);
             Texture wolvSprite = TextureLoader.FromFile(device, "../../../textures/wolverine.png");
-            //wolverine.Transparent = true;
-            //wolverine.P = new Vector2(0.5f, 1);
-            wolverine.Tex = wolvSprite;
-            wolverines.Add(wolverine);
+
+            for (int i = 0; i < 1; i++) 
+            {
+                //wolverine = new Wolverine((float)random.Next(3, 5) + (float)random.NextDouble(),  .5f);
+                wolverine = new Wolverine(3, .5f);
+                
+                //wolverine.Transparent = true;
+                //wolverine.P = new Vector2(0.5f, 1);
+                wolverine.Tex = wolvSprite;
+                wolverines.Add(wolverine);
+            }
+                
             /*
             wolverine.AddVertex(new Vector2(-0.2f, 0));
             wolverine.AddTex(new Vector2(0, 1));
@@ -377,13 +409,20 @@ namespace StepDX
             {
                 w.Render(device);
             }
+            flag.Render(device);
             player.Render(device);
             //End the scene
-            using (System.Drawing.Font font1 = new System.Drawing.Font("Times New Roman", 24, FontStyle.Bold, GraphicsUnit.Pixel))
-            {
-                PointF pointF1 = new PointF(30, 10);
-                //e.Graphics.DrawString("Hello", font1, Brushes.Blue, pointF1);
+
+            Sprite sp = new Sprite(device);
+            Microsoft.DirectX.Direct3D.Font font = new Microsoft.DirectX.Direct3D.Font(device, new System.Drawing.Font(System.Drawing.FontFamily.GenericSansSerif, 20f));
+            font.DrawText(null, "score: " + score, new Point(3, 3), Color.Black);
+
+            if(game_over == true){
+                //Microsoft.DirectX.Direct3D.Font font2 = new Microsoft.DirectX.Direct3D.Font(device, new System.Drawing.Font(System.Drawing.FontFamily.GenericSansSerif, 40f));
+                font.DrawText(null, "You Win! Score:" + score, new Point(200, 200), Color.Black);
+                font.Dispose();
             }
+            font.Dispose();
             
             device.EndScene();
             device.Present();
@@ -446,11 +485,19 @@ namespace StepDX
                
                 player.Advance(step);
                 basketball.Advance(step);
-                wolverine.Advance(step);
-                foreach(Polygon p in swords)
+                foreach(Wolverine wolverine in wolverines)
+                {
+                    wolverine.Advance(step);
+                }
+                foreach(Sword p in swords)
                 {
                     p.Advance(step);
+                    if (p.P.X > 15)
+                    {
+                        sword_to_remove = p;
+                    }
                 }
+                swords.Remove(sword_to_remove);
                 //sword_sprite.Advance(step);
                /* foreach (Polygon p in world)
                 {
@@ -477,7 +524,12 @@ namespace StepDX
                     }
                     else if (player.P.X > 10)
                     {
-                        Restart();
+                        //Restart();
+                        //Microsoft.DirectX.Direct3D.Font font = new Microsoft.DirectX.Direct3D.Font(device, new System.Drawing.Font(System.Drawing.FontFamily.GenericSansSerif, 40f));
+                        //font.DrawText(null, "You Win!" + score, new Point(3, 3), Color.Black);
+                        game_over = true;
+                        //while (true) { ; }
+
                     }
                     if (collision.Test(basketball, p))
                     {
@@ -495,35 +547,42 @@ namespace StepDX
                         basketball.Advance(0);
 
                     }
-                    if (collision.Test(wolverine, p))
+                    foreach (Wolverine wolverine in wolverines)
                     {
-                        //powerup.Add(basketball);
-                        float depth = collision.P1inP2 ?
-                                  collision.Depth : -collision.Depth;
-                        wolverine.P = wolverine.P + collision.N * depth;
-                        Vector2 v3 = wolverine.V;
-                        Vector2 v4 = wolverine.P;
-                        if (collision.N.X != 0)
-                            v4.X = v4.X + 1;
+                        if (collision.Test(wolverine, p))
+                        {
+                            //powerup.Add(basketball);
+                            float depth = collision.P1inP2 ?
+                                      collision.Depth : -collision.Depth;
+                            wolverine.P = wolverine.P + collision.N * depth;
+                            Vector2 v3 = wolverine.V;
+                            Vector2 v4 = wolverine.P;
+                            if (collision.N.X != 0)
+                                v4.X = v4.X + 1;
                             v3.X = -v3.X;
-                        if (collision.N.Y != 0)
-                            v3.Y = 0;
+                            if (collision.N.Y != 0)
+                                v3.Y = 0;
 
-                        wolverine.P = v4;
-                        wolverine.V = v3;
-                        wolverine.Advance(0);
+                            wolverine.P = v4;
+                            wolverine.V = v3;
+                            wolverine.Advance(0);
 
+                        }
                     }
                 }
 
                 if (collision.Test(pt, player))
                 {
                     Vector2 v = basketball.V;
-                    v.X = 1.5f;
+                    v.X = .5f;
                     //v.Y = -0.5f;
-                    basketball.P = new Vector2(1.5f, 3.7f);
-                    basketball.V = v;
-                    powerup.Add(basketball);
+
+                    if (powerup.Count < 1)
+                    {
+                        basketball.P = new Vector2(1.5f, 3.7f);
+                        basketball.V = v;
+                        powerup.Add(basketball);
+                    }
                 }
 
                 foreach (Polygon p in powerup)
@@ -553,6 +612,7 @@ namespace StepDX
                     {
                         coin_to_remove = p;
                         sound.Coin();
+                        score += 100;
                         //coins.Remove(p);
                     }
                 }
@@ -576,6 +636,7 @@ namespace StepDX
                         {
                             sword_to_remove = s;
                             wolverine_to_remove = p;
+                            score += 250;
                             sound.Death();
                         }
                     }
@@ -583,6 +644,17 @@ namespace StepDX
 
                 wolverines.Remove(wolverine_to_remove);
                 swords.Remove(sword_to_remove);
+
+                foreach (Wolverine w in wolverines)
+                {
+
+                
+                    if (Math.Abs(player.P.X - w.P.X - 3.5) < .6 && Math.Abs(player.P.Y - w.P.Y) < 1)
+                    {
+                        Restart();
+                    }
+                }
+                
 
                 delta -= step;
             }
