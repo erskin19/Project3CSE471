@@ -209,8 +209,8 @@ namespace StepDX
             world.Add(pt);
 
             //Texture spritetexture = TextureLoader.FromFile(device, "../../guy8.bmp");
-            spritetexture = TextureLoader.FromFile(device, "../../smb_mario_sheet5.png");
-            spritepowertexture = TextureLoader.FromFile(device, "../../smb_mario_sheet_power.png");
+            spritetexture = TextureLoader.FromFile(device, "../../../textures/small_mario.png");
+            spritepowertexture = TextureLoader.FromFile(device, "../../../textures/big_mario.png");
             player.Transparent = true;
             player.P = new Vector2(0.5f, 1);
             player.Tex = spritetexture;
